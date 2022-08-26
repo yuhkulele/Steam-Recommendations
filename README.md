@@ -3,6 +3,8 @@
 ## Overview
 My goal with this project was to leverage data from Steam in order to tackle two approaches to provide PC game recommendations for Steam users. I used content labels - categories, genres, and tags - to provide content based recommendations. For a collaborative recommender, I utilized playtime as an implicit rating of a user's engagement with a game. I compared user profiles based on their game playtimes to come up with a collaborative recommender that predicts how much time a player might spend on a game. 
 
+Please view my presentation in the repository for a project overview:
+
 ## Business Understanding
 Steam is the most popular digital distribution service and store for PC games. While physical discs were once the norm for PC game sales, digital downloads have become the standard means of owning and accessing PC games. Steam offers a platform for users to manage their library of games with access to services such as cloud saves and community features. In 2021, Steam averaged around [69 million daily active players](https://store.steampowered.com/news/group/4145017/view/3133946090937137590). Steam saw a 27% increase in user spending and a 21% increase in playtime from 2020 to 2021. 
 
@@ -28,18 +30,29 @@ The Steam Web API data is under the repository's data folder as a JSON file ('St
 I used pandas to extract content labels consisting of the 'categories', 'genres', and 'steamspy_tag' columns. There was overlap within the label groups. I filtered out these duplicate labels as well as labels that I reasoned were not strong influences on a Steam user's purchasing decision. Some apps in the dataset were not games and were removed. The labels were combined into a single column in a dataframe along with additional identifying information of games.
 
 Here are the most common labels in the data:
-!['popular_labels.png']
+
+![images/frequent_labels.png]
 
 ### Steam User Libraries - Steam Web API
 This data was used for my collaborative filtering model. I removed any users with fewer than 5 games played as well as any games with fewer than 5 users to improve user comparisons. The recommender had to account for if a user owned but had not yet played a game. For each user, I extracted out just the games with recorded playtime for modeling. A separate dictionary contained information on user libraries including unplayed games for my recommender to reference.
+
+![max_playtime.png]
 
 ## Modeling
 
 ### Content-based Approach:
 I took the dataframe containing information of labels and applied scikit-learn's MultiLabelBinazer to the labels column. This encoded each label as a 0 or 1 for every game in the dataframe. The result was each row was now a vector of many dimensions(labels) describing a game. I used cosine similarity to calculate similarity between the vectorized game. My content-based recommender returns the top n-recommendations for a user-specified game based on highest similarity scores.
 
+Here are two examples of the Jupyter notebook output of my content-based recommender:
+
+![images/content_stardew.png]
+
+![images/content_lego_sw.png]
+
 ### Collaborative-filtering Approach:
 For each game in a user's library, I scaled their playtime against the maximum playtime of that game across all users. This bounded each game's playtime 'rating' between 0 and 1. Using those playtime ratings, I used surprise to implement a collaborative-filtering model to compare user profiles between each other to predict a user's playtimes. The playtimes were predicted as the scaled rating based on how similar users spent their playtime. I iterated through model algorithms, using grid searches to optimize hyperparameters. My best performing model was svd_gs3. This model had the lowest Root Mean Square Error (RMSE) at 0.218 on the test set while also having faster runtimes for the SVD++ model that produced a near-ideentical RMSE. This SVD model can be found as a .sav file under the models folder in the repository.
+
+![images/surprise_models_all]
 
 My collaborative-filtering recommender took in the Steam ID of a user within the dataset and returned n-recommendations. The SVD algorithm determined predictions for games that the user hadn't played based on how their playtime ratings compared to those of other users. The predictions with the highest scaled playtime ratings were returned as the recommendations.
 
@@ -73,6 +86,7 @@ The PC game market continues to expand with more platforms offering competition 
 
 ## Repository Structure
 
+'''
 ├── data
 │   ├── Steam_store_data
 │   │   ├── steam.csv
@@ -90,3 +104,4 @@ The PC game market continues to expand with more platforms offering competition 
 ├── notebook.ipynb
 ├── notebook.pdf
 └── presentation.pdf
+'''
