@@ -31,12 +31,12 @@ I used pandas to extract content labels consisting of the 'categories', 'genres'
 
 Here are the most common labels in the data:
 
-!(./images/frequent_labels.png)
+!['Most Common Labels'](./images/frequent_labels.png)
 
 ### Steam User Libraries - Steam Web API
 This data was used for my collaborative filtering model. I removed any users with fewer than 5 games played as well as any games with fewer than 5 users to improve user comparisons. The recommender had to account for if a user owned but had not yet played a game. For each user, I extracted out just the games with recorded playtime for modeling. A separate dictionary contained information on user libraries including unplayed games for my recommender to reference.
 
-!(./max_playtime.png)
+!['Games with Top Playtime'](./max_playtime.png)
 
 ## Modeling
 
@@ -45,18 +45,18 @@ I took the dataframe containing information of labels and applied scikit-learn's
 
 Here are two examples of the Jupyter notebook output of my content-based recommender:
 
-!(./images/content_stardew.png)
+!['Stardew Valley Example'](./images/content_stardew.png)
 
-!(./images/content_lego_sw.png)
+!['Lego Star Wars Example'](./images/content_lego_sw.png)
 
 ### Collaborative-filtering Approach:
 For each game in a user's library, I scaled their playtime against the maximum playtime of that game across all users. This bounded each game's playtime 'rating' between 0 and 1. Using those playtime ratings, I used surprise to implement a collaborative-filtering model to compare user profiles between each other to predict a user's playtimes. The playtimes were predicted as the scaled rating based on how similar users spent their playtime. I iterated through model algorithms, using grid searches to optimize hyperparameters. My best performing model was svd_gs3. This model had the lowest Root Mean Square Error (RMSE) at 0.218 on the test set while also having faster runtimes for the SVD++ model that produced a near-ideentical RMSE. This SVD model can be found as a .sav file under the models folder in the repository.
 
-!(./images/surprise_models_all.png)
+!['Model Errors'](./images/surprise_models_all.png)
 
 My collaborative-filtering recommender took in the Steam ID of a user within the dataset and returned n-recommendations. The SVD algorithm determined predictions for games that the user hadn't played based on how their playtime ratings compared to those of other users. The predictions with the highest scaled playtime ratings were returned as the recommendations.
 
-!(./images/collab.png)
+!['Collaborative Recommender Example'](./images/collab.png)
 
 ## Conclusion
 
@@ -102,6 +102,7 @@ The PC game market continues to expand with more platforms offering competition 
 │   ├── collab_rec.sav
 ├── .gitignore
 ├── README.md
+├── environment.yaml
 ├── notebook.ipynb
 └── presentation.pdf
 ```
