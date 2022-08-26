@@ -36,7 +36,7 @@ Here are the most common labels in the data:
 ### Steam User Libraries - Steam Web API
 This data was used for my collaborative filtering model. I removed any users with fewer than 5 games played as well as any games with fewer than 5 users to improve user comparisons. The recommender had to account for if a user owned but had not yet played a game. For each user, I extracted out just the games with recorded playtime for modeling. A separate dictionary contained information on user libraries including unplayed games for my recommender to reference.
 
-!['Games with Top Playtime'](./max_playtime.png)
+!['Games with Top Playtime'](./images/max_playtime.png)
 
 ## Modeling
 
